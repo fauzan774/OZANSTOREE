@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OZNSTORE - Login & Registrasi</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* FLOATING WHATSAPP BUTTON */
+      .wa-float {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #25d366;
+        color: #fff;
+        border-radius: 50px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+        z-index: 9999;
+        font-weight: bold;
+        font-size: 14px;
+        transition: transform 0.3s ease;
+        border: 2px solid #1ebe57;
+      }
+      .wa-float:hover {
+        transform: translateY(-5px);
+        background-color: #1ebe57;
+      }
+      .wa-float img {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* AUTH TOGGLE */
+      .toggle-auth {
+        margin-top: 15px;
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+      .toggle-auth span {
+        color: var(--accent-green);
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .toggle-auth span:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="logo">OZN<span>STORE</span></a>
+        <ul class="nav-links">
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="produk.html">Produk</a></li>
+          <li><a href="tentang.html">Tentang & Riwayat</a></li>
+          <li>
+            <a
+              href="login.html"
+              class="active"
+              style="color: var(--accent-green)"
+              >Login</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main
+      class="main-container"
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+      "
+    >
+      <div
+        class="auth-container"
+        id="loginBox"
+        style="
+          width: 100%;
+          max-width: 400px;
+          padding: 30px;
+          background: #1c1c30;
+          border-radius: 15px;
+          border: 1px solid #2d2d44;
+          text-align: center;
+        "
+      >
+        <h2 style="margin-bottom: 20px; color: #fff">
+          LOGIN <span>OZNSTORE</span>
+        </h2>
+        <form id="loginForm">
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Username</label
+            >
+            <input
+              type="text"
+              id="logUser"
+              required
+              placeholder="Masukkan username kamu"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Password</label
+            >
+            <input
+              type="password"
+              id="logPass"
+              required
+              placeholder="Masukkan password"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn-auth"
+            style="
+              width: 100%;
+              padding: 12px;
+              background: #00e676;
+              border: none;
+              border-radius: 8px;
+              font-weight: bold;
+              cursor: pointer;
+              color: #000;
+              margin-top: 10px;
+            "
+          >
+            Masuk ke Akun
+          </button>
+
+          <div class="toggle-auth">
+            Belum punya akun?
+            <span onclick="switchAuth('register')">Daftar di sini</span>
+          </div>
+        </form>
+      </div>
+
+      <div
+        class="auth-container"
+        id="registerBox"
+        style="
+          display: none;
+          width: 100%;
+          max-width: 400px;
+          padding: 30px;
+          background: #1c1c30;
+          border-radius: 15px;
+          border: 1px solid #2d2d44;
+          text-align: center;
+        "
+      >
+        <h2 style="margin-bottom: 20px; color: #fff">
+          REGISTRASI <span>OZNSTORE</span>
+        </h2>
+        <form id="registerForm">
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Nama Akun (Username)</label
+            >
+            <input
+              type="text"
+              id="regUser"
+              required
+              placeholder="Buat username untuk login"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Email Aktif</label
+            >
+            <input
+              type="email"
+              id="regEmail"
+              required
+              placeholder="Contoh: nama@gmail.com"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Nomor HP / WhatsApp</label
+            >
+            <input
+              type="tel"
+              id="regHp"
+              required
+              placeholder="Contoh: 08123456789"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px; text-align: left">
+            <label
+              style="
+                display: block;
+                margin-bottom: 5px;
+                color: #a5a5b1;
+                font-size: 14px;
+              "
+              >Password</label
+            >
+            <input
+              type="password"
+              id="regPass"
+              required
+              placeholder="Buat password baru"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: #12121e;
+                border: 1px solid #2d2d44;
+                border-radius: 8px;
+                color: #fff;
+                outline: none;
+              "
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="btn-auth"
+            style="
+              width: 100%;
+              padding: 12px;
+              background: #00b0ff;
+              border: none;
+              border-radius: 8px;
+              font-weight: bold;
+              cursor: pointer;
+              color: #fff;
+              margin-top: 10px;
+            "
+          >
+            Daftar Sekarang
+          </button>
+
+          <div class="toggle-auth">
+            Sudah punya akun?
+            <span onclick="switchAuth('login')">Login di sini</span>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <a
+      href="https://wa.me/6281234567890?text=Halo%20Admin%20OZNSTORE,%20saya%20butuh%20bantuan%20mendaftar/login."
+      target="_blank"
+      class="wa-float"
+    >
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+        alt="WhatsApp Icon"
+      />
+      Bantuan
+    </a>
+
+    <script>
+      // 1. Fungsi Ganti Mode (Login <-> Register)
+      function switchAuth(mode) {
+        if (mode === "login") {
+          document.getElementById("loginBox").style.display = "block";
+          document.getElementById("registerBox").style.display = "none";
+        } else {
+          document.getElementById("loginBox").style.display = "none";
+          document.getElementById("registerBox").style.display = "block";
+        }
+      }
+
+      // 2. Fungsi Registrasi (Menyimpan 4 Data)
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const user = document.getElementById("regUser").value.trim();
+          const email = document.getElementById("regEmail").value.trim();
+          const phone = document.getElementById("regHp").value.trim();
+          const pass = document.getElementById("regPass").value.trim();
+
+          let usersDB = JSON.parse(localStorage.getItem("oznUsers")) || [];
+
+          // Mencegah username kembar
+          const exists = usersDB.find((u) => u.username === user);
+          if (exists) {
+            alert(
+              "Username sudah terdaftar! Silakan gunakan nama/username yang lain.",
+            );
+            return;
+          }
+
+          // Menyimpan SEMUA data ke Database Browser (Local Storage)
+          usersDB.push({
+            username: user,
+            email: email,
+            phone: phone,
+            password: pass,
+          });
+
+          localStorage.setItem("oznUsers", JSON.stringify(usersDB));
+
+          alert("✅ Registrasi Berhasil! Silakan login dengan akun baru Anda.");
+          document.getElementById("registerForm").reset();
+          switchAuth("login");
+        });
+
+      // 3. Fungsi Login
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const user = document.getElementById("logUser").value.trim();
+          const pass = document.getElementById("logPass").value.trim();
+
+          // Cek jika yang masuk adalah Admin
+          if (user === "admin" && pass === "admin123") {
+            localStorage.setItem("userRole", "admin");
+            localStorage.setItem("userActive", "Administrator");
+            alert("✅ Login Admin Berhasil!");
+            window.location.href = "admin.html";
+            return;
+          }
+
+          // Cek jika yang masuk adalah Pelanggan Biasa
+          let usersDB = JSON.parse(localStorage.getItem("oznUsers")) || [];
+          const validUser = usersDB.find(
+            (u) => u.username === user && u.password === pass,
+          );
+
+          if (validUser) {
+            localStorage.setItem("userRole", "customer");
+            localStorage.setItem("userActive", validUser.username);
+            alert("✅ Login Berhasil! Selamat datang, " + validUser.username);
+            window.location.href = "index.html";
+          } else {
+            alert("❌ Username atau Password salah! Silakan coba lagi.");
+          }
+        });
+    </script>
+  </body>
+</html>
