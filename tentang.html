@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OZNSTORE - Tentang & Kontak</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">OZN<span>STORE</span></a>
+            <div class="search-box">
+                <input type="text" placeholder="Ada yang bisa dibantu?">
+                <button type="button">Cari</button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="produk.html">Produk</a></li>
+                <li><a href="tentang.html" class="active">Tentang & Kontak</a></li>
+                <li><a href="login.html" id="navLoginBtnTentang" style="color: var(--accent-green)">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- KONTEN TENTANG & KONTAK -->
+    <main class="main-container">
+        
+        <!-- KARTU TENTANG KAMI -->
+        <div class="about-card">
+            <h2>TENTANG KAMI</h2>
+            <p>
+                <span style="color:var(--accent-green); font-weight:600;">OZNSTORE</span> adalah website terpercaya yang menyediakan layanan produk digital seperti top-up koin/diamond game populer, voucher, serta akun premium aplikasi streaming terfavorit. Kami selalu berkomitmen memberikan pelayanan tercepat dan harga terbaik sejak tahun 2021 untuk seluruh konsumen setia kami.
+            </p>
+
+            <!-- BAGIAN KONTAK DI DALAM HALAMAN TENTANG -->
+            <section class="contact-section">
+                <h3>HUBUNGI / IKUTI SOSIAL MEDIA KAMI</h3>
+                <div class="social-icons">
+                    <!-- Ganti file gambar icon sosmed sesuai aset lokal kamu -->
+                    <a href="https://instagram.com" target="_blank"><img src="./image/ig.png" alt="Instagram"></a>
+                    <a href="https://facebook.com" target="_blank"><img src="./image//fb.png" alt="Facebook"></a>
+                    <a href="https://github.com" target="_blank"><img src="./image/github.png" alt="GitHub"></a>
+                    <a href="https://linkedin.com" target="_blank"><img src="./image/linkedin.png" alt="LinkedIn"></a>
+                </div>
+            </section>
+        </div>
+
+        <div class="about-card" id="userHistoryCard" style="margin-top:30px; text-align:left;">
+            <h3 style="color:var(--accent-green); text-align:center; margin-bottom:15px;">Riwayat Pembelian Kamu</h3>
+            <div class="table-responsive">
+                <table class="report-table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Produk/Paket</th>
+                            <th>Harga</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userHistoryBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+        const currentUser = localStorage.getItem('userActive');
+        const historyCard = document.getElementById('userHistoryCard');
+        const historyBody = document.getElementById('userHistoryBody');
+
+        // Tombol login/logout navbar
+        const navBtn = document.getElementById('navLoginBtnTentang');
+        if (currentUser) {
+            navBtn.innerText = 'Logout (' + currentUser + ')';
+            navBtn.href = '#';
+            navBtn.onclick = function () {
+                localStorage.removeItem('userActive');
+                localStorage.removeItem('userRole');
+                window.location.href = 'index.html';
+            };
+        }
+    
+    // 1. KONDISI JIKA BELUM LOGIN
+    if(!currentUser) {
+        historyCard.innerHTML = `
+            <div style="text-align:center; padding: 20px;">
+                <h3 style="color:#ffb300; margin-bottom:10px;">Akses Riwayat Terkunci</h3>
+                <p style="color:var(--text-gray); margin-bottom:15px;">Kamu harus masuk ke akunmu terlebih dahulu untuk melihat histori semua transaksi.</p>
+                <a href="login.html" class="btn-auth" style="display:inline-block; text-decoration:none; width:auto; padding:10px 20px; background:var(--accent-green); color:#000; border-radius:5px; font-weight:bold;">Login / Registrasi Sekarang</a>
+            </div>
+        `;
+    } else {
+        // 2. KONDISI JIKA SUDAH LOGIN
+        const allData = JSON.parse(localStorage.getItem('oznTransactions')) || [];
+        
+        // Filter: Hanya mengambil transaksi milik user yang sedang aktif login
+        const userData = allData.filter(item => item.pembeli === currentUser);
+
+        if(userData.length === 0) {
+            historyBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:15px;'>Kamu sudah login sebagai <b>" + currentUser + "</b>, tetapi belum pernah melakukan transaksi apa pun.</td></tr>";
+        } else {
+            userData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>#${item.id}</b></td>
+                    <td>${item.produk} - ${item.paket}</td>
+                    <td style="color:var(--accent-green)">${item.harga}</td>
+                    <td><span class="status-badge ${item.status === 'Pending' ? 'status-pending' : 'status-success'}">${item.status}</span></td>
+                `;
+                historyBody.appendChild(tr);
+            });
+        }
+    }
+</script>
+    </main>
+
+</body>
+</html>
