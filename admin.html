@@ -1,1 +1,780 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OZNSTORE - Panel Admin</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav
+      class="navbar"
+      style="background: #141421; border-bottom: 2px solid #00e676"
+    >
+      <div class="nav-container">
+        <a href="#" class="logo">OZN<span>ADMIN</span></a>
+        <ul class="nav-links">
+          <li>
+            <a
+              href="index.html"
+              onclick="logoutAdmin()"
+              style="color: #00e676; font-weight: bold"
+              >Keluar Admin</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main-container" style="padding-top: 30px">
+      <div style="margin-bottom: 0">
+        <button class="tab-btn active" onclick="switchTab('pesanan')">
+          📦 Transaksi
+        </button>
+        <button class="tab-btn" onclick="switchTab('harga')">
+          💰 Produk & Stok
+        </button>
+        <button class="tab-btn" onclick="switchTab('pelanggan')">
+          👥 Data Pembeli
+        </button>
+      </div>
+
+      <div
+        id="tab-pesanan"
+        class="tab-content active"
+        style="
+          background: #1e1e2f;
+          border: 1px solid #2d2d44;
+          border-radius: 0 10px 10px 10px;
+          padding: 20px;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 style="color: #fff; margin: 0">Manajemen Transaksi by System</h2>
+          <button
+            onclick="hapusSemuaTransaksi()"
+            style="
+              background: #ff3d00;
+              color: #fff;
+              border: none;
+              padding: 8px 15px;
+              border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 12px;
+            "
+          >
+            Reset Riwayat
+          </button>
+        </div>
+
+        <div style="overflow-x: auto">
+          <table
+            style="
+              width: 100%;
+              border-collapse: collapse;
+              color: #fff;
+              text-align: left;
+              min-width: 750px;
+            "
+          >
+            <thead>
+              <tr
+                style="
+                  border-bottom: 2px solid #2d2d44;
+                  color: var(--text-gray);
+                "
+              >
+                <th style="padding: 12px">ID Transaksi</th>
+                <th style="padding: 12px">Akun Pembeli</th>
+                <th style="padding: 12px">Detail Produk & ID</th>
+                <th style="padding: 12px">Total & Metode</th>
+                <th style="padding: 12px">Status</th>
+                <th style="padding: 12px; text-align: center">Aksi Validasi</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrderBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div
+        id="tab-harga"
+        class="tab-content"
+        style="
+          background: #1e1e2f;
+          border: 1px solid #2d2d44;
+          border-radius: 0 10px 10px 10px;
+          padding: 20px;
+        "
+      >
+        <h2 style="color: #fff; margin-bottom: 20px">
+          Sistem Kelola Produk & Stok (CRUD)
+        </h2>
+
+        <div
+          style="
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #141421;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2d2d44;
+          "
+        >
+          <label style="color: #fff; font-size: 14px; font-weight: bold"
+            >Pilih Produk:</label
+          >
+          <select
+            id="gameSelector"
+            onchange="renderProductTable()"
+            style="
+              padding: 10px;
+              background: #0a0a1a;
+              color: #00e676;
+              border: 1px solid #444;
+              border-radius: 8px;
+              outline: none;
+              font-weight: bold;
+              cursor: pointer;
+              min-width: 250px;
+            "
+          ></select>
+
+          <button
+            onclick="toggleAddGameForm()"
+            style="
+              background: #00b0ff;
+              color: #fff;
+              border: none;
+              padding: 10px 15px;
+              border-radius: 8px;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            ➕ Tambah Produk Baru
+          </button>
+          <button
+            onclick="deleteGame()"
+            style="
+              background: #ff3d00;
+              color: #fff;
+              border: none;
+              padding: 10px 15px;
+              border-radius: 8px;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            🗑️ Hapus Keseluruhan
+          </button>
+        </div>
+
+        <div
+          id="addGameForm"
+          style="
+            display: none;
+            background: #141421;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #00b0ff;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 style="color: #00b0ff; font-size: 16px; margin-bottom: 15px">
+            ➕ Tambah Produk
+          </h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 15px">
+            <div style="flex: 1; min-width: 200px">
+              <label style="color: #aaa; font-size: 12px">Nama Produk</label>
+              <input
+                type="text"
+                id="newGameName"
+                placeholder="Contoh: Genshin Impact"
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  background: #0a0a1a;
+                  color: #fff;
+                  border: 1px solid #444;
+                  border-radius: 6px;
+                  outline: none;
+                  margin-top: 5px;
+                "
+              />
+            </div>
+            <div style="flex: 1; min-width: 200px">
+              <label style="color: #aaa; font-size: 12px">Kategori</label>
+              <select
+                id="newGameCat"
+                style="
+                  width: 100%;
+                  padding: 10px;
+                  background: #0a0a1a;
+                  color: #fff;
+                  border: 1px solid #444;
+                  border-radius: 6px;
+                  outline: none;
+                  font-weight: bold;
+                  margin-top: 5px;
+                "
+              >
+                <option value="Game Populer">🎮 Game Populer</option>
+                <option value="Streaming App">📺 Streaming App</option>
+                <option value="Voucher & Lainnya">🎟️ Voucher & Lainnya</option>
+              </select>
+            </div>
+            <div style="flex: 1; min-width: 200px">
+              <label style="color: #aaa; font-size: 12px"
+                >Upload Foto/Logo (Opsional)</label
+              >
+              <input
+                type="file"
+                id="newGameImg"
+                accept="image/*"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  background: #0a0a1a;
+                  color: #fff;
+                  border: 1px dashed #00b0ff;
+                  border-radius: 6px;
+                  outline: none;
+                  margin-top: 5px;
+                  cursor: pointer;
+                  font-size: 12px;
+                "
+              />
+            </div>
+          </div>
+          <button
+            onclick="saveNewGame()"
+            style="
+              background: #00e676;
+              color: #000;
+              border: none;
+              padding: 12px 20px;
+              border-radius: 6px;
+              font-weight: bold;
+              cursor: pointer;
+              width: 100%;
+              margin-top: 15px;
+            "
+          >
+            💾 Simpan Aplikasi/Game
+          </button>
+        </div>
+
+        <div style="overflow-x: auto"><div id="productTableArea"></div></div>
+
+        <div
+          style="
+            margin-top: 25px;
+            background: #141421;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #2d2d44;
+          "
+        >
+          <h3 style="color: #00b0ff; margin-bottom: 15px; font-size: 15px">
+            ➕ Tambah Varian & Stok
+          </h3>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <input
+              type="text"
+              id="newQty"
+              placeholder="Varian (Cth: 50 Diamond)"
+              style="
+                flex: 1;
+                min-width: 180px;
+                padding: 10px;
+                background: #0a0a1a;
+                color: #fff;
+                border: 1px solid #444;
+                border-radius: 6px;
+                outline: none;
+              "
+            />
+            <input
+              type="text"
+              id="newPrice"
+              placeholder="Harga (Cth: Rp 10.000)"
+              style="
+                flex: 1;
+                min-width: 140px;
+                padding: 10px;
+                background: #0a0a1a;
+                color: #fff;
+                border: 1px solid #444;
+                border-radius: 6px;
+                outline: none;
+              "
+            />
+            <input
+              type="text"
+              id="newStock"
+              placeholder="Stok (Cth: 100 / Habis)"
+              style="
+                flex: 1;
+                min-width: 120px;
+                padding: 10px;
+                background: #0a0a1a;
+                color: #fff;
+                border: 1px solid #444;
+                border-radius: 6px;
+                outline: none;
+              "
+            />
+            <button
+              onclick="addNewItem()"
+              style="
+                background: #00b0ff;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100px;
+              "
+            >
+              Tambah
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="tab-pelanggan"
+        class="tab-content"
+        style="
+          background: #1e1e2f;
+          border: 1px solid #2d2d44;
+          border-radius: 0 10px 10px 10px;
+          padding: 20px;
+        "
+      >
+        <h2 style="color: #fff; margin-bottom: 20px">
+          Data & Pengolahan Akun Pelanggan
+        </h2>
+        <div style="overflow-x: auto">
+          <table
+            style="
+              width: 100%;
+              border-collapse: collapse;
+              color: #fff;
+              text-align: left;
+              min-width: 900px;
+            "
+          >
+            <thead>
+              <tr
+                style="
+                  border-bottom: 2px solid #2d2d44;
+                  color: var(--text-gray);
+                "
+              >
+                <th style="padding: 12px; width: 5%">No</th>
+                <th style="padding: 12px; width: 20%">Username</th>
+                <th style="padding: 12px; width: 20%">Email Pelanggan</th>
+                <th style="padding: 12px; width: 20%">No. HP (WA)</th>
+                <th style="padding: 12px; width: 15%">Password</th>
+                <th style="padding: 12px; width: 20%; text-align: center">
+                  Aksi Kelola
+                </th>
+              </tr>
+            </thead>
+            <tbody id="adminUserBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-bukti" id="modalBukti">
+      <div class="modal-bukti-content">
+        <h3 style="color: #00e676; margin-bottom: 10px">
+          📎 Bukti Transfer System
+        </h3>
+        <img
+          id="buktiImg"
+          style="
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid #2d2d44;
+          "
+        />
+        <div
+          style="
+            margin-top: 8px;
+            padding: 10px;
+            background: #141421;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #aaa;
+          "
+          id="noBuktiMsg"
+        ></div>
+        <br />
+        <button
+          onclick="closeBuktiModal()"
+          style="
+            background: #ff3d00;
+            color: #fff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+
+    <script>
+      if (localStorage.getItem("userRole") !== "admin") {
+        alert("Akses Ditolak! Anda bukan Admin.");
+        window.location.href = "login.html";
+      }
+
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + tab).classList.add("active");
+        event.target.classList.add("active");
+        if (tab === "pelanggan") loadUsers();
+      }
+
+      /* === MANAJEMEN PESANAN === */
+      function loadAdminOrders() {
+        const orderBody = document.getElementById("adminOrderBody");
+        orderBody.innerHTML = "";
+        let list = JSON.parse(localStorage.getItem("oznTransactions")) || [];
+
+        if (list.length === 0) {
+          orderBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#aaa;">Tidak ada pesanan.</td></tr>`;
+          return;
+        }
+
+        [...list].reverse().forEach((item) => {
+          const originalIndex = list.findIndex((t) => t.id === item.id);
+          const tr = document.createElement("tr");
+          tr.style.borderBottom = "1px solid #2d2d44";
+
+          let statusBadge =
+            item.status === "Sukses"
+              ? `<span class="badge-sukses">✅ Sukses</span>`
+              : item.status === "Ditolak"
+                ? `<span class="badge-tolak">❌ Ditolak</span>`
+                : item.status === "Pending"
+                  ? `<span class="badge-pending">⏳ Pending</span>`
+                  : `<span class="badge-menunggu">🕐 Menunggu Bukti</span>`;
+          let aksiBtns = item.buktiTransfer
+            ? `<button class="btn-sm btn-bukti" onclick="lihatBukti(${originalIndex})">📎 Cek Bukti</button>`
+            : `<span style="font-size:12px; color:#888;">Belum Bayar</span>`;
+
+          if (item.status === "Pending") {
+            aksiBtns += `<br><button class="btn-sm btn-validasi" onclick="prosesSukses(${originalIndex})" style="margin-top:5px;">✅ Selesai</button>
+                         <button class="btn-sm btn-tolak" onclick="tolakPesanan(${originalIndex})" style="margin-top:5px;">❌ Tolak</button>`;
+          }
+
+          tr.innerHTML = `
+            <td style="padding:12px;"><span style="color:#00b0ff; font-weight:bold;">#${item.id}</span><br><small style="color:#666;">${item.waktu}</small></td>
+            <td style="padding:12px;"><b style="color:#fff;">${item.pembeli}</b></td>
+            <td style="padding:12px;"><b>${item.produk}</b> (${item.paket})<br><small style="color:#aaa;">ID: ${item.tujuan}</small></td>
+            <td style="padding:12px;"><span style="color:#00e676; font-weight:bold;">${item.harga}</span><br><small style="color:#aaa;">${item.metode}</small></td>
+            <td style="padding:12px;">${statusBadge}</td>
+            <td style="padding:12px; text-align:center;">${aksiBtns}</td>
+          `;
+          orderBody.appendChild(tr);
+        });
+      }
+
+      function prosesSukses(index) {
+        let list = JSON.parse(localStorage.getItem("oznTransactions")) || [];
+        list[index].status = "Sukses";
+        localStorage.setItem("oznTransactions", JSON.stringify(list));
+        loadAdminOrders();
+        alert("Pesanan Selesai!");
+      }
+      function tolakPesanan(index) {
+        let list = JSON.parse(localStorage.getItem("oznTransactions")) || [];
+        list[index].status = "Ditolak";
+        localStorage.setItem("oznTransactions", JSON.stringify(list));
+        loadAdminOrders();
+        alert("Pesanan Ditolak!");
+      }
+      function hapusSemuaTransaksi() {
+        if (confirm("Hapus semua riwayat pesanan?")) {
+          localStorage.removeItem("oznTransactions");
+          loadAdminOrders();
+        }
+      }
+      function lihatBukti(index) {
+        let list = JSON.parse(localStorage.getItem("oznTransactions")) || [];
+        const item = list[index];
+        if (item.buktiTransfer) {
+          document.getElementById("buktiImg").src = item.buktiTransfer;
+        }
+        document.getElementById("modalBukti").style.display = "flex";
+      }
+      function closeBuktiModal() {
+        document.getElementById("modalBukti").style.display = "none";
+      }
+      function logoutAdmin() {
+        localStorage.removeItem("userRole");
+        window.location.href = "login.html";
+      }
+
+      /* === MANAJEMEN PELANGGAN (EDIT EMAIL & HP) === */
+      function loadUsers() {
+        const userBody = document.getElementById("adminUserBody");
+        userBody.innerHTML = "";
+        let users = JSON.parse(localStorage.getItem("oznUsers")) || [];
+
+        if (users.length === 0) {
+          userBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#aaa;">Belum ada pelanggan terdaftar.</td></tr>`;
+          return;
+        }
+
+        users.forEach((user, index) => {
+          const tr = document.createElement("tr");
+          tr.style.borderBottom = "1px solid #2d2d44";
+
+          // Memasukkan 4 kolom data ke dalam form edit
+          tr.innerHTML = `
+            <td style="padding:12px;">${index + 1}</td>
+            <td style="padding:12px;"><input type="text" id="edit_username_${index}" value="${user.username}" style="background:#141421; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; width:100%; font-size:13px;"></td>
+            <td style="padding:12px;"><input type="email" id="edit_email_${index}" value="${user.email || ""}" style="background:#141421; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; width:100%; font-size:13px;"></td>
+            <td style="padding:12px;"><input type="tel" id="edit_phone_${index}" value="${user.phone || ""}" style="background:#141421; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; width:100%; font-size:13px;"></td>
+            <td style="padding:12px;"><input type="text" id="edit_password_${index}" value="${user.password || ""}" style="background:#141421; color:#fff; border:1px solid #444; padding:8px; border-radius:6px; width:100%; font-size:13px;"></td>
+            <td style="padding:12px; text-align:center;">
+              <button onclick="saveUser(${index})" style="background:#00e676; color:#000; border:none; padding:6px 12px; font-weight:bold; border-radius:4px; cursor:pointer;">Simpan</button>
+              <button onclick="deleteUser(${index})" style="background:#ff3d00; color:#fff; border:none; padding:6px 12px; font-weight:bold; border-radius:4px; cursor:pointer; margin-left:4px;">Hapus</button>
+            </td>
+          `;
+          userBody.appendChild(tr);
+        });
+      }
+
+      function saveUser(index) {
+        let users = JSON.parse(localStorage.getItem("oznUsers")) || [];
+        const updatedName = document
+          .getElementById(`edit_username_${index}`)
+          .value.trim();
+        const updatedEmail = document
+          .getElementById(`edit_email_${index}`)
+          .value.trim();
+        const updatedPhone = document
+          .getElementById(`edit_phone_${index}`)
+          .value.trim();
+        const updatedPass = document
+          .getElementById(`edit_password_${index}`)
+          .value.trim();
+
+        if (!updatedName || !updatedPass) {
+          alert("Gagal: Nama pembeli dan Password tidak boleh dikosongkan!");
+          return;
+        }
+
+        // Simpan pembaruan ke array
+        users[index].username = updatedName;
+        users[index].email = updatedEmail;
+        users[index].phone = updatedPhone;
+        users[index].password = updatedPass;
+
+        localStorage.setItem("oznUsers", JSON.stringify(users));
+        alert("✅ Perubahan akun pembeli berhasil disimpan ke system!");
+        loadUsers();
+      }
+
+      function deleteUser(index) {
+        if (
+          confirm(
+            "Apakah Anda yakin ingin menghapus akun pelanggan ini secara permanen?",
+          )
+        ) {
+          let users = JSON.parse(localStorage.getItem("oznUsers")) || [];
+          users.splice(index, 1);
+          localStorage.setItem("oznUsers", JSON.stringify(users));
+          loadUsers();
+        }
+      }
+
+      /* === CRUD KATALOG PRODUK === */
+      let oznKatalog = JSON.parse(localStorage.getItem("oznKatalog")) || {};
+      let oznKategoriProduk =
+        JSON.parse(localStorage.getItem("oznKategoriProduk")) || {};
+      let oznImages = JSON.parse(localStorage.getItem("oznImages")) || {};
+
+      function loadGameOptions(selectedGame = null) {
+        const selector = document.getElementById("gameSelector");
+        selector.innerHTML = "";
+        let firstGame = null;
+        Object.keys(oznKatalog).forEach((game, index) => {
+          if (index === 0) firstGame = game;
+          const opt = document.createElement("option");
+          opt.value = game;
+          opt.textContent = `[${oznKategoriProduk[game] || "App"}] ` + game;
+          selector.appendChild(opt);
+        });
+        if (selectedGame && oznKatalog[selectedGame])
+          selector.value = selectedGame;
+        else if (firstGame) selector.value = firstGame;
+        renderProductTable();
+      }
+
+      function toggleAddGameForm() {
+        const form = document.getElementById("addGameForm");
+        form.style.display = form.style.display === "none" ? "block" : "none";
+      }
+
+      function saveNewGame() {
+        const gameName = document.getElementById("newGameName").value.trim();
+        const gameCat = document.getElementById("newGameCat").value;
+        const fileInput = document.getElementById("newGameImg");
+
+        if (!gameName) {
+          alert("Nama produk wajib diisi!");
+          return;
+        }
+        if (oznKatalog[gameName]) {
+          alert("Produk sudah terdaftar!");
+          return;
+        }
+
+        const executeSave = (base64Image) => {
+          oznKatalog[gameName] = [];
+          oznKategoriProduk[gameName] = gameCat;
+          if (base64Image) {
+            oznImages[gameName] = base64Image;
+            localStorage.setItem("oznImages", JSON.stringify(oznImages));
+          }
+          localStorage.setItem("oznKatalog", JSON.stringify(oznKatalog));
+          localStorage.setItem(
+            "oznKategoriProduk",
+            JSON.stringify(oznKategoriProduk),
+          );
+          alert(`✅ '${gameName}' berhasil dibuat!`);
+          document.getElementById("addGameForm").style.display = "none";
+          loadGameOptions(gameName);
+        };
+
+        if (fileInput.files.length > 0) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            executeSave(e.target.result);
+          };
+          reader.readAsDataURL(fileInput.files[0]);
+        } else {
+          executeSave(null);
+        }
+      }
+
+      function deleteGame() {
+        const game = document.getElementById("gameSelector").value;
+        if (!game) return;
+        if (confirm(`Hapus produk '${game}' beserta seluruh variannya?`)) {
+          delete oznKatalog[game];
+          delete oznKategoriProduk[game];
+          delete oznImages[game];
+          localStorage.setItem("oznKatalog", JSON.stringify(oznKatalog));
+          localStorage.setItem(
+            "oznKategoriProduk",
+            JSON.stringify(oznKategoriProduk),
+          );
+          localStorage.setItem("oznImages", JSON.stringify(oznImages));
+          loadGameOptions();
+        }
+      }
+
+      function renderProductTable() {
+        const game = document.getElementById("gameSelector").value;
+        const area = document.getElementById("productTableArea");
+        area.innerHTML = "";
+        if (!game || !oznKatalog[game]) return;
+        const items = oznKatalog[game];
+        const table = document.createElement("table");
+        table.style =
+          "width:100%; border-collapse:collapse; color:#fff; min-width:700px; margin-top:10px;";
+        table.innerHTML = `<thead><tr style="color:#aaa; border-bottom:1px solid #2d2d44; background:#141421;"><th style="padding:12px;">Nama Varian</th><th style="padding:12px;">Harga</th><th style="padding:12px;">Stok</th><th style="padding:12px; text-align:center;">Aksi</th></tr></thead>`;
+        const tbody = document.createElement("tbody");
+        if (items.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#aaa;">Belum ada varian produk.</td></tr>`;
+        } else {
+          items.forEach((item, i) => {
+            const tr = document.createElement("tr");
+            tr.style = "border-bottom:1px solid #1a1a2e;";
+            tr.innerHTML = `<td style="padding:10px;"><input type="text" id="qty_${i}" value="${item.qty}" class="price-edit-input" style="width:100%; background:#1c1c30; border:1px solid #444;" /></td><td style="padding:10px;"><input type="text" id="price_${i}" value="${item.price}" class="price-edit-input" style="width:100%; background:#1c1c30; border:1px solid #444;" /></td><td style="padding:10px;"><input type="text" id="stock_${i}" value="${item.stock || "Tersedia"}" class="price-edit-input" style="width:100%; background:#1c1c30; border:1px solid #444;" /></td><td style="padding:10px; text-align:center;"><button onclick="saveItem('${game}', ${i})" class="btn-sm btn-validasi">Simpan</button> <button onclick="deleteItem('${game}', ${i})" class="btn-sm btn-tolak">Hapus</button></td>`;
+            tbody.appendChild(tr);
+          });
+        }
+        table.appendChild(tbody);
+        area.appendChild(table);
+      }
+
+      function saveItem(game, index) {
+        oznKatalog[game][index].qty = document
+          .getElementById(`qty_${index}`)
+          .value.trim();
+        oznKatalog[game][index].price = document
+          .getElementById(`price_${index}`)
+          .value.trim();
+        oznKatalog[game][index].stock = document
+          .getElementById(`stock_${index}`)
+          .value.trim();
+        localStorage.setItem("oznKatalog", JSON.stringify(oznKatalog));
+        alert("✅ Berhasil disimpan!");
+      }
+      function deleteItem(game, index) {
+        if (confirm("Hapus varian ini?")) {
+          oznKatalog[game].splice(index, 1);
+          localStorage.setItem("oznKatalog", JSON.stringify(oznKatalog));
+          renderProductTable();
+        }
+      }
+      function addNewItem() {
+        const game = document.getElementById("gameSelector").value;
+        const qty = document.getElementById("newQty").value.trim();
+        const price = document.getElementById("newPrice").value.trim();
+        const stock =
+          document.getElementById("newStock").value.trim() || "Tersedia";
+        if (!qty || !price) {
+          alert("Varian dan Harga wajib diisi!");
+          return;
+        }
+        oznKatalog[game].push({ qty, price, stock });
+        localStorage.setItem("oznKatalog", JSON.stringify(oznKatalog));
+        renderProductTable();
+      }
+
+      window.onload = function () {
+        loadAdminOrders();
+        loadGameOptions();
+      };
+    </script>
+  </body>
+</html>
 
