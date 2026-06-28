@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OZNSTORE - Beranda</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">OZN<span>STORE</span></a>
+            <div class="search-box">
+                <input type="text" placeholder="Cari sesuatu di sini...">
+                <button type="button">Cari</button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Beranda</a></li>
+                <li><a href="produk.html">Produk</a></li>
+                <li><a href="tentang.html">Tentang & Kontak</a></li>
+                <li><a href="login.html" id="navLoginBtn" style="color: var(--accent-green)">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- KONTEN BERANDA -->
+    <main class="main-container">
+        <h2 class="section-title">Promo Spesial Hari Ini</h2>
+        
+        <div class="slider-container">
+            <!-- Bungkus semua gambar di dalam kelas slider-track -->
+            <div class="slider-track" id="sliderTrack">
+                <!-- Gambar 1 (Ganti nama file sesuai aset gambarmu) -->
+                <img src="./image/slid1.jpeg" alt="Promo 1" class="slider-img">
+                <!-- Gambar 2 (Ganti nama file sesuai aset gambarmu) -->
+                <img src="./image/slid2.jpeg" alt="Promo 2" class="slider-img">
+                <!-- Gambar 3 (Ganti nama file sesuai aset gambarmu) -->
+                <img src="./image/slid3.jpeg" alt="Promo 3" class="slider-img">
+            </div>
+
+            <!-- Titik Indikator Bawah -->
+            <div class="slider-dots" id="sliderDots">
+                <!-- Akan dibuat otomatis oleh JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT UNTUK FITUR GESER OTOMATIS & KLIK -->
+    <script>
+        const track = document.getElementById('sliderTrack');
+        const images = document.querySelectorAll('.slider-img');
+        const dotsContainer = document.getElementById('sliderDots');
+        
+        let currentIndex = 0;
+        const totalImages = images.length;
+
+        // 1. Buat titik-titik indikator (dots) secara otomatis sesuai jumlah gambar
+        images.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.className = 'dot' + (index === 0 ? ' active' : '');
+            dot.addEventListener('click', () => {
+                goToSlide(index);
+            });
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        // 2. Fungsi untuk menggeser gambar ke indeks tertentu
+        function goToSlide(index) {
+            currentIndex = index;
+            // Geser track ke kiri berdasarkan persentase indeks
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Perbarui warna titik aktif
+            dots.forEach((dot, i) => {
+                if (i === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // 3. Fungsi geser otomatis setiap 4 detik
+        function autoSlide() {
+            currentIndex = (currentIndex + 1) % totalImages;
+            goToSlide(currentIndex);
+        }
+
+        let slideInterval = setInterval(autoSlide, 4000);
+
+        // Pas user nge-klik dot, reset timer otomatisnya biar gak tabrakan gilirannya
+        dots.forEach(dot => {
+            
+            dot.addEventListener('click', () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(autoSlide, 4000);
+            });
+        });
+
+        // ==========================================
+        // SCRIPT BARU: FITUR PENCARIAN (TARUH DI SINI)
+        // ==========================================
+        const searchInput = document.querySelector('.search-box input');
+        const searchBtn = document.querySelector('.search-box button');
+
+        function filterGames() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            // Sesuaikan kelas pembungkus produk game kamu (misal: .game-card atau .product-card)
+            const gameCards = document.querySelectorAll('.game-card, .product-card');
+
+            gameCards.forEach(card => {
+                // Cari elemen teks judul di dalam kartu game kamu
+                const titleElement = card.querySelector('.game-title, h3');
+                const gameTitle = titleElement ? titleElement.innerText.toLowerCase() : '';
+
+                if (gameTitle.includes(keyword)) {
+                    card.style.display = ""; // Tampilkan jika cocok
+                } else {
+                    card.style.display = "none"; // Sembunyikan jika tidak cocok
+                }
+            });
+        }
+
+        if (searchBtn) searchBtn.addEventListener('click', filterGames);
+        if (searchInput) searchInput.addEventListener('input', filterGames);
+
+        // ==========================================
+        // SCRIPT: TOMBOL LOGIN / LOGOUT DI NAVBAR
+        // ==========================================
+        const activeUser = localStorage.getItem('userActive');
+        const navLoginBtn = document.getElementById('navLoginBtn');
+        if (activeUser) {
+            navLoginBtn.innerText = 'Logout (' + activeUser + ')';
+            navLoginBtn.href = '#';
+            navLoginBtn.onclick = function () {
+                localStorage.removeItem('userActive');
+                localStorage.removeItem('userRole');
+                window.location.href = 'index.html';
+            };
+        }
+    </script>
+</body>
+</html>
